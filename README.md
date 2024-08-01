@@ -1,0 +1,1 @@
+calculadora comparacao da aceleracao
