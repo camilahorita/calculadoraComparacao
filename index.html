@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Comparação da Aceleração do Processo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f5f7;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 10px;
+            margin-bottom: 24px;
+            font-size: 24px;
+            color: #333333;
+        }
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: rgb(6, 44, 53);
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: rgb(6, 44, 53);
+        }
+        .results {
+            display: none;
+            background-color: #f0f0f0;
+            color: #333333;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+        .result-item {
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            background-color: rgb(6, 44, 53);
+            color: #ffffff;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Calculadora de Comparação</h2>
+    
+    <label for="goal">Valor da Meta (R$):</label>
+    <input type="number" id="goal" placeholder="Digite o valor da meta">
+    
+    <label for="monthly-savings">Valor Poupado por Mês (R$):</label>
+    <input type="number" id="monthly-savings" placeholder="Digite o valor poupado por mês">
+    
+    <label for="cut-expenses">Corte de Gastos Mensal (R$):</label>
+    <input type="number" id="cut-expenses" placeholder="Digite o valor do corte de gastos">
+    
+    <label for="extra-income">Renda Extra Mensal (R$):</label>
+    <input type="number" id="extra-income" placeholder="Digite o valor da renda extra">
+    
+    <label for="investment-rate">Taxa de Juros Anual (%):</label>
+    <input type="number" id="investment-rate" placeholder="Digite a taxa de juros anual" value="10">
+    
+    <button onclick="calculateComparison()">Calcular</button>
+
+    <div class="results" id="result">
+        <div id="time-savings" class="result-item">Tempo com valor poupado: 0 meses</div>
+        <div id="time-savings-cut" class="result-item">Tempo com valor poupado + corte de gastos: 0 meses</div>
+        <div id="time-savings-cut-extra" class="result-item">Tempo com valor poupado + corte de gastos + renda extra: 0 meses</div>
+        <div id="time-savings-cut-extra-invest" class="result-item">Tempo com valor poupado + corte de gastos + renda extra investidos: 0 meses</div>
+    </div>
+</div>
+
+<script>
+function calculateComparison() {
+    const goal = parseFloat(document.getElementById('goal').value);
+    const monthlySavings = parseFloat(document.getElementById('monthly-savings').value);
+    const cutExpenses = parseFloat(document.getElementById('cut-expenses').value);
+    const extraIncome = parseFloat(document.getElementById('extra-income').value);
+    const investmentRate = parseFloat(document.getElementById('investment-rate').value) / 100;
+
+    if (isNaN(goal) || goal <= 0 || isNaN(monthlySavings) || monthlySavings < 0 || isNaN(cutExpenses) || cutExpenses < 0 || isNaN(extraIncome) || extraIncome < 0 || isNaN(investmentRate) || investmentRate < 0) {
+        alert('Por favor, insira valores válidos.');
+        return;
+    }
+
+    function calculateInvestmentTime(goal, monthlyContribution, monthlyRate) {
+        let futureValue = 0;
+        let months = 0;
+        
+        while (futureValue < goal) {
+            futureValue = (futureValue + monthlyContribution) * (1 + monthlyRate);
+            months++;
+        }
+        
+        return months;
+    }
+
+    // Calculando a taxa mensal a partir da taxa anual
+    const monthlyRate = Math.pow(1 + investmentRate, 1 / 12) - 1;
+
+    // 1. Tempo com valor poupado mensalmente
+    const timeSavings = calculateInvestmentTime(goal, monthlySavings, 0);
+
+    // 2. Tempo com valor poupado + corte de gastos
+    const totalSavingsCut = monthlySavings + cutExpenses;
+    const timeSavingsCut = calculateInvestmentTime(goal, totalSavingsCut, 0);
+
+    // 3. Tempo com valor poupado + corte de gastos + renda extra
+    const totalSavingsCutExtra = monthlySavings + cutExpenses + extraIncome;
+    const timeSavingsCutExtra = calculateInvestmentTime(goal, totalSavingsCutExtra, 0);
+
+    // 4. Tempo com valor poupado + corte de gastos + renda extra investidos mensalmente com a taxa de juros fornecida
+    const timeSavingsCutExtraInvest = calculateInvestmentTime(goal, totalSavingsCutExtra, monthlyRate);
+
+    document.getElementById('time-savings').innerText = `Tempo com valor poupado: ${timeSavings} meses`;
+    document.getElementById('time-savings-cut').innerText = `Tempo com valor poupado + corte de gastos: ${timeSavingsCut} meses`;
+    document.getElementById('time-savings-cut-extra').innerText = `Tempo com valor poupado + corte de gastos + renda extra: ${timeSavingsCutExtra} meses`;
+    document.getElementById('time-savings-cut-extra-invest').innerText = `Tempo com valor poupado + corte de gastos + renda extra investidos: ${timeSavingsCutExtraInvest} meses`;
+
+    // Exibir resultados
+    document.getElementById('result').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
