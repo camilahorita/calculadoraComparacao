@@ -98,10 +98,14 @@
     <button onclick="calculateComparison()">Calcular</button>
 
     <div class="results" id="result">
-        <div id="time-savings" class="result-item">Tempo com valor poupado: 0 meses</div>
-        <div id="time-savings-cut" class="result-item">Tempo com valor poupado + corte de gastos: 0 meses</div>
-        <div id="time-savings-cut-extra" class="result-item">Tempo com valor poupado + corte de gastos + renda extra: 0 meses</div>
-        <div id="time-savings-cut-extra-invest" class="result-item">Tempo com valor poupado + corte de gastos + renda extra investidos: 0 meses</div>
+        <p>Tempo só com o valor poupado:</p>
+        <div id="time-savings" class="result-item"> 0 meses</div>
+        <p>Tempo com os valores poupado + corte de gastos:</p>
+        <div id="time-savings-cut" class="result-item"> 0 meses</div>
+        <p>Tempo com os valores poupado + corte de gastos + renda extra:</p>
+        <div id="time-savings-cut-extra" class="result-item"> 0 meses</div>
+        <p>Tempo com os valores poupado + corte de gastos + renda extra sendo investidos:</p>
+        <div id="time-savings-cut-extra-invest" class="result-item">  0 meses</div>
     </div>
 </div>
 
@@ -147,10 +151,10 @@ function calculateComparison() {
     // 4. Tempo com valor poupado + corte de gastos + renda extra investidos mensalmente com a taxa de juros fornecida
     const timeSavingsCutExtraInvest = calculateInvestmentTime(goal, totalSavingsCutExtra, monthlyRate);
 
-    document.getElementById('time-savings').innerText = `Tempo com valor poupado: ${timeSavings} meses`;
-    document.getElementById('time-savings-cut').innerText = `Tempo com valor poupado + corte de gastos: ${timeSavingsCut} meses`;
-    document.getElementById('time-savings-cut-extra').innerText = `Tempo com valor poupado + corte de gastos + renda extra: ${timeSavingsCutExtra} meses`;
-    document.getElementById('time-savings-cut-extra-invest').innerText = `Tempo com valor poupado + corte de gastos + renda extra investidos: ${timeSavingsCutExtraInvest} meses`;
+    document.getElementById('time-savings').innerText = `${timeSavings} meses`;
+    document.getElementById('time-savings-cut').innerText = `${timeSavingsCut} meses`;
+    document.getElementById('time-savings-cut-extra').innerText = `${timeSavingsCutExtra} meses`;
+    document.getElementById('time-savings-cut-extra-invest').innerText = `${timeSavingsCutExtraInvest} meses`;
 
     // Exibir resultados
     document.getElementById('result').style.display = 'block';
