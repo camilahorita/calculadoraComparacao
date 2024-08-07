@@ -83,28 +83,28 @@
     <label for="goal">Valor da Meta (R$):</label>
     <input type="number" id="goal" placeholder="Digite o valor da meta">
     
-    <label for="monthly-savings">Valor Poupado por Mês (R$):</label>
-    <input type="number" id="monthly-savings" placeholder="Digite o valor poupado por mês">
+    <label for="monthly-savings">Valor Investido do seu Salário por Mês (R$/mês):</label>
+    <input type="number" id="monthly-savings" placeholder="Digite o valor investido do seu salário ">
     
-    <label for="cut-expenses">Corte de Gastos Mensal (R$):</label>
+    <label for="cut-expenses">Corte de Gastos Mensal (R$/mês):</label>
     <input type="number" id="cut-expenses" placeholder="Digite o valor do corte de gastos">
     
-    <label for="extra-income">Renda Extra Mensal (R$):</label>
+    <label for="extra-income">Renda Extra Mensal (R$/mês):</label>
     <input type="number" id="extra-income" placeholder="Digite o valor da renda extra">
     
-    <label for="investment-rate">Taxa de Juros Anual (%):</label>
+    <label for="investment-rate">Taxa de Juros Anual (%/ano):</label>
     <input type="number" id="investment-rate" placeholder="Digite a taxa de juros anual" value="10">
     
     <button onclick="calculateComparison()">Calcular</button>
 
     <div class="results" id="result">
-        <p>Tempo só com o valor poupado:</p>
+        <p>Tempo só com o valor investido:</p>
         <div id="time-savings" class="result-item"> 0 meses</div>
-        <p>Tempo com os valores poupado + corte de gastos:</p>
+        <p>Tempo com os valores investido + corte de gastos:</p>
         <div id="time-savings-cut" class="result-item"> 0 meses</div>
-        <p>Tempo com os valores poupado + corte de gastos + renda extra:</p>
+        <p>Tempo com os valores investido + corte de gastos + renda extra:</p>
         <div id="time-savings-cut-extra" class="result-item"> 0 meses</div>
-        <p>Tempo com os valores poupado + corte de gastos + renda extra sendo investidos:</p>
+        <p>Tempo com os valores investido + corte de gastos + renda extra sendo investidos com juros anuais:</p>
         <div id="time-savings-cut-extra-invest" class="result-item">  0 meses</div>
     </div>
 </div>
@@ -119,6 +119,11 @@ function calculateComparison() {
 
     if (isNaN(goal) || goal <= 0 || isNaN(monthlySavings) || monthlySavings < 0 || isNaN(cutExpenses) || cutExpenses < 0 || isNaN(extraIncome) || extraIncome < 0 || isNaN(investmentRate) || investmentRate < 0) {
         alert('Por favor, insira valores válidos.');
+        return;
+    }
+
+    if (monthlySavings === 0 && cutExpenses === 0 && extraIncome === 0) {
+        alert('Por favor, insira um valor para poupança, corte de gastos ou renda extra.');
         return;
     }
 
@@ -163,3 +168,4 @@ function calculateComparison() {
 
 </body>
 </html>
+
