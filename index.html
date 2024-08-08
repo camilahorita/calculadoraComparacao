@@ -73,6 +73,12 @@
             border-radius: 5px;
             margin-top: 10px;
         }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -97,15 +103,18 @@
     
     <button onclick="calculateComparison()">Calcular</button>
 
+    <br>
+    <div class="error-message" id="error-message"></div>
+
     <div class="results" id="result">
         <p>Tempo só com o valor investido:</p>
-        <div id="time-savings" class="result-item"> 0 meses</div>
+        <div id="time-savings" class="result-item">-</div>
         <p>Tempo com os valores investido + corte de gastos:</p>
-        <div id="time-savings-cut" class="result-item"> 0 meses</div>
+        <div id="time-savings-cut" class="result-item">-</div>
         <p>Tempo com os valores investido + corte de gastos + renda extra:</p>
-        <div id="time-savings-cut-extra" class="result-item"> 0 meses</div>
+        <div id="time-savings-cut-extra" class="result-item">-</div>
         <p>Tempo com os valores investido + corte de gastos + renda extra sendo investidos com juros anuais:</p>
-        <div id="time-savings-cut-extra-invest" class="result-item">  0 meses</div>
+        <div id="time-savings-cut-extra-invest" class="result-item">-</div>
     </div>
 </div>
 
@@ -116,14 +125,17 @@ function calculateComparison() {
     const cutExpenses = parseFloat(document.getElementById('cut-expenses').value);
     const extraIncome = parseFloat(document.getElementById('extra-income').value);
     const investmentRate = parseFloat(document.getElementById('investment-rate').value) / 100;
+    const errorMessage = document.getElementById('error-message');
 
-    if (isNaN(goal) || goal <= 0 || isNaN(monthlySavings) || monthlySavings < 0 || isNaN(cutExpenses) || cutExpenses < 0 || isNaN(extraIncome) || extraIncome < 0 || isNaN(investmentRate) || investmentRate < 0) {
-        alert('Por favor, insira valores válidos.');
+    errorMessage.innerText = ''; // Limpar mensagens de erro anteriores
+
+    if (isNaN(goal) || goal <= 0 || isNaN(monthlySavings) || monthlySavings < 0 || isNaN(cutExpenses) || cutExpenses < 0 || extraIncome < 0 ||  isNaN(investmentRate) || isNaN(extraIncome) || investmentRate < 0) {
+        errorMessage.innerText = 'Por favor, insira valores válidos.';
         return;
     }
 
-    if (monthlySavings === 0 && cutExpenses === 0 && extraIncome === 0) {
-        alert('Por favor, insira um valor para poupança, corte de gastos ou renda extra.');
+    if ((monthlySavings === 0 ) && (cutExpenses === 0 ) && (extraIncome === 0 )) {
+        errorMessage.innerText = 'Por favor, insira um valor para poupança, corte de gastos ou renda extra.';
         return;
     }
 
@@ -143,18 +155,30 @@ function calculateComparison() {
     const monthlyRate = Math.pow(1 + investmentRate, 1 / 12) - 1;
 
     // 1. Tempo com valor poupado mensalmente
-    const timeSavings = calculateInvestmentTime(goal, monthlySavings, 0);
+    let timeSavings = '-';
+    if (monthlySavings > 0) {
+        timeSavings = calculateInvestmentTime(goal, monthlySavings, 0);
+    }
 
     // 2. Tempo com valor poupado + corte de gastos
+    let timeSavingsCut = '-';
     const totalSavingsCut = monthlySavings + cutExpenses;
-    const timeSavingsCut = calculateInvestmentTime(goal, totalSavingsCut, 0);
+    if (totalSavingsCut > 0) {
+        timeSavingsCut = calculateInvestmentTime(goal, totalSavingsCut, 0);
+    }
 
     // 3. Tempo com valor poupado + corte de gastos + renda extra
+    let timeSavingsCutExtra = '-';
     const totalSavingsCutExtra = monthlySavings + cutExpenses + extraIncome;
-    const timeSavingsCutExtra = calculateInvestmentTime(goal, totalSavingsCutExtra, 0);
+    if (totalSavingsCutExtra > 0) {
+        timeSavingsCutExtra = calculateInvestmentTime(goal, totalSavingsCutExtra, 0);
+    }
 
     // 4. Tempo com valor poupado + corte de gastos + renda extra investidos mensalmente com a taxa de juros fornecida
-    const timeSavingsCutExtraInvest = calculateInvestmentTime(goal, totalSavingsCutExtra, monthlyRate);
+    let timeSavingsCutExtraInvest = '-';
+    if (totalSavingsCutExtra > 0) {
+        timeSavingsCutExtraInvest = calculateInvestmentTime(goal, totalSavingsCutExtra, monthlyRate);
+    }
 
     document.getElementById('time-savings').innerText = `${timeSavings} meses`;
     document.getElementById('time-savings-cut').innerText = `${timeSavingsCut} meses`;
@@ -168,4 +192,5 @@ function calculateComparison() {
 
 </body>
 </html>
+
 
